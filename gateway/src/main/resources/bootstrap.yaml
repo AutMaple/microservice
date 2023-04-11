@@ -22,28 +22,15 @@ spring:
             - Path=/license/**
           filters:
             - RewritePath=/license/(?<path>.*), /$\{path}
-      default-filters:
-        - TokenRelay # 令牌转发 Filter
   main:
     allow-circular-references: true
   security:
     oauth2:
-      client:
-        provider:
-          keycloak:
-            issuer-uri: http://localhost:10000/realms/ostock
-            user-name-attribute: preferred_username
-
-        registration:
-          keycloak:
-            provider: keycloak
-            client-id: ostock
-            client-secret: 1ahXcWZqcHtW4wRY6ENCfgEKlpOQCCeZ # 不同机器上的 keycloak，client-secret 也不同
-            scope: openid
-            authorization-grant-type: authorization_code
       resourceserver:
         jwt:
           issuer-uri: http://localhost:10000/realms/ostock
+  session:
+    store-type: none
 
 eureka:
   instance:
