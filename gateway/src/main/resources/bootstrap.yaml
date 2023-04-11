@@ -38,9 +38,12 @@ spring:
           keycloak:
             provider: keycloak
             client-id: ostock
-            client-secret: zL6aOph0TDnsIqqdNl0k4o0Btpg5ED4W # 不同机器上的 keycloak，client-secret 也不同
+            client-secret: 1ahXcWZqcHtW4wRY6ENCfgEKlpOQCCeZ # 不同机器上的 keycloak，client-secret 也不同
             scope: openid
             authorization-grant-type: authorization_code
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:10000/realms/ostock
 
 eureka:
   instance:

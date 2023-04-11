@@ -11,6 +11,3 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: http://localhost:10000/realms/ostock
-logging:
-  level:
-    org: debug
