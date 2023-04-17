@@ -4,6 +4,14 @@ spring:
   cloud:
     config:
       uri: http://localhost:8071
+    stream:
+      bindings:
+        input:
+          destination: orgChangeTopic
+          content-type: application/json
+      kafka:
+        binder:
+          brokers: localhost
   security:
     oauth2:
       resourceserver:
