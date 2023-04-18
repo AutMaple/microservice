@@ -27,6 +27,9 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: http://localhost:10000/realms/ostock
+  redis:
+    host: localhost
+    port: 6379
 
 resilience4j:
   circuitbreaker:
