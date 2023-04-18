@@ -1,17 +1,27 @@
 spring:
   application:
     name: license-service
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
   cloud:
     config:
       uri: http://localhost:8071
     stream:
       bindings:
-        input:
-          destination: orgChangeTopic
-          content-type: application/json
-      kafka:
-        binder:
-          brokers: localhost
+        consumer-in-0:
+          destination: test
+          group: consumer
+#        supplier-out-0:
+#          destination: test
+#          producer:
+#            poller:
+#              fixed-delay: 1000
+      function:
+        definition: consumer
+
   security:
     oauth2:
       resourceserver:
@@ -38,7 +48,6 @@ resilience4j:
       licenseService:
         max-concurrent-calls: 1
         max-wait-duration: 100ms
-
 
   thread-pool-bulkhead: # 线程池方式配置的参数
     instances:

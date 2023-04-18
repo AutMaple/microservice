@@ -6,6 +6,9 @@ spring:
   cloud:
     config:
       uri: http://localhost:8071
+    stream:
+      function:
+        definition: organizationChangedConsumer
   security:
     oauth2:
       resourceserver:
