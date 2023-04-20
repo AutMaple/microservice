@@ -1,9 +1,12 @@
 package com.autmaple.controller;
 
+import com.autmaple.config.stream.KafkaTopicProperties;
+import com.autmaple.event.model.OrganizationChangeModel;
 import com.autmaple.model.Organization;
 import com.autmaple.service.OrganizationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.security.RolesAllowed;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -27,6 +31,10 @@ import java.util.stream.Collectors;
 @Slf4j
 public class OrganizationController {
     private final OrganizationService organizationService;
+
+    private final StreamBridge streamBridge;
+
+    private final KafkaTopicProperties kafkaTopicProperties;
 
     @GetMapping("/{organizationId}")
     @RolesAllowed({"ADMIN"})
@@ -44,6 +52,12 @@ public class OrganizationController {
     public void updateOrganization(@PathVariable("organizationId") String organizationId,
                                    @RequestBody Organization organization) {
         organizationService.update(organization);
+        OrganizationChangeModel model = new OrganizationChangeModel();
+        model.setType("Modify");
+        model.setAction("UPDATE");
+        model.setOrganizationId(organization.getId());
+        model.setCorrelationId(UUID.randomUUID().toString());
+        streamBridge.send(kafkaTopicProperties.getOrganizationChangedTopic(), model);
     }
 
     @PostMapping

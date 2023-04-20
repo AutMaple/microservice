@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import java.util.function.Consumer;
 
 @Component
-public class OrganizationChangeModelConsumer implements Consumer<OrganizationChangeModel> {
+public class OrganizationConsumer implements Consumer<OrganizationChangeModel> {
     @Override
     public void accept(OrganizationChangeModel organizationChangeModel) {
         System.out.println(organizationChangeModel.toString());

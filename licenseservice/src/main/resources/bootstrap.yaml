@@ -11,16 +11,16 @@ spring:
       uri: http://localhost:8071
     stream:
       bindings:
-        consumer-in-0:
+        organizationConsumer-in-0:
           destination: test
           group: consumer
-#        supplier-out-0:
-#          destination: test
-#          producer:
-#            poller:
-#              fixed-delay: 1000
+      #        supplier-out-0:
+      #          destination: test
+      #          producer:
+      #            poller:
+      #              fixed-delay: 1000
       function:
-        definition: consumer
+        definition: organizationConsumer
 
   security:
     oauth2:

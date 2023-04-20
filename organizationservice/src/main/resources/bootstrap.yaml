@@ -8,9 +8,20 @@ spring:
       uri: http://localhost:8071
     stream:
       function:
-        definition: organizationChangedConsumer
+        definition: organizationSupplier
+      bindings:
+        organizationSupplier-out-0:
+          destination: ${kafka.topic.organization}
+          producer:
+            poller:
+              fixed-delay: 2s
+
   security:
     oauth2:
       resourceserver:
         jwt:
           issuer-uri: http://localhost:10000/realms/ostock
+
+kafka:
+  topic:
+    organization: test

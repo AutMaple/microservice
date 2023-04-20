@@ -32,11 +32,11 @@ public class LicenseServiceApplication {
 //        return () -> new OrganizationChangeModel("Organization", "Modify", "hahfshh", "1092201-fsjk");
 //    }
 
-    @Bean
-    ApplicationRunner runner(StreamBridge bridge) {
-        return args -> {
-            OrganizationChangeModel organizationModel = new OrganizationChangeModel("change", "modify", "autmaple", "991009-qc");
-            bridge.send("test", organizationModel);
-        };
-    }
+//    @Bean
+//    ApplicationRunner runner(StreamBridge bridge) {
+//        return args -> {
+//            OrganizationChangeModel organizationModel = new OrganizationChangeModel("change", "modify", "autmaple", "991009-qc");
+//            bridge.send("test", organizationModel);
+//        };
+//    }
 }
