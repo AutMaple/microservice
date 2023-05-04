@@ -24,6 +24,7 @@ spring:
             - RewritePath=/license/(?<path>.*), /$\{path}
   main:
     allow-circular-references: true
+    allow-bean-definition-overriding: true
   security:
     oauth2:
       resourceserver:

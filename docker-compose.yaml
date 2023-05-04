@@ -23,4 +23,4 @@ services:
     image: bitnami/kafka:3.4.0
     container_name: kafka
     ports:
-      - 
+      - "9092:9092"
