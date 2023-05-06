@@ -37,9 +37,4 @@ public class License extends RepresentationModel<License> {
     private String contactEmail;
     @Transient
     private String contactPhone;
-
-    public License withComment(String comment) {
-        this.setComment(comment);
-        return this;
-    }
 }

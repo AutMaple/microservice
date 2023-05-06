@@ -1,27 +1,34 @@
 package com.autmaple.filters;
 
+import brave.Span;
+import brave.Tracer;
+import brave.propagation.TraceContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpHeaders;
+import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
+
+import java.util.Optional;
 
 @Configuration
 @Slf4j
 @RequiredArgsConstructor
-public class ResponseFilter {
-    private final FilterUtils filterUtils;
+public class ResponseFilter implements GlobalFilter {
+    private final Tracer tracer;
 
-    @Bean
-    public GlobalFilter postGlobalFilter() {
-        return (exchange, chain) -> chain.filter(exchange).then(Mono.fromRunnable(() -> {
-            HttpHeaders requestHeaders = exchange.getRequest().getHeaders();
-            String correlationId = filterUtils.getCorrelationId(requestHeaders).orElse("error, correlation-id is null.");
-            log.info("Adding the correlation id to the outbound headers. {}", correlationId);
-            exchange.getResponse().getHeaders().add(FilterUtils.CORRELATION_ID, correlationId);
-            log.warn("Completing outgoing request fo {}", exchange.getRequest().getURI());
+    @Override
+    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+        String tracingId = Optional.ofNullable(tracer.currentSpan())
+                .map(Span::context)
+                .map(TraceContext::traceIdString)
+                .orElse("null");
+        return chain.filter(exchange).then(Mono.fromRunnable(() -> {
+            log.warn("Adding the correlation id to the outbound headers: {}", tracingId);
+            exchange.getResponse().getHeaders().add(FilterUtils.CORRELATION_ID, tracingId);
+            log.warn("Completing outgoing request for {}", exchange.getRequest().getURI());
         }));
     }
 }

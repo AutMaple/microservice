@@ -30,6 +30,9 @@ spring:
   redis:
     host: localhost
     port: 6379
+  sleuth:
+    sampler:
+      rate: 10
 
 resilience4j:
   circuitbreaker:

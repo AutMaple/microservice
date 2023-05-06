@@ -1,6 +1,5 @@
 package com.autmaple.service;
 
-import com.autmaple.config.ServiceConfig;
 import com.autmaple.model.License;
 import com.autmaple.model.Organization;
 import com.autmaple.repository.LicenseRepository;
@@ -29,7 +28,6 @@ import java.util.concurrent.TimeoutException;
 public class LicenseService {
     private final LicenseRepository licenseRepository;
     private final MessageSource messages;
-    private final ServiceConfig config;
     private final OrganizationFeignClient organizationClient;
 
     public License getLicense(String organizationId, String licenseId) {
@@ -44,18 +42,18 @@ public class LicenseService {
             license.setContactEmail(organization.getContactEmail());
             license.setContactPhone(organization.getContactPhone());
         }
-        return license.withComment(config.getProperty());
+        return license;
     }
 
     public License updateLicense(License license) {
         licenseRepository.save(license);
-        return license.withComment(config.getProperty());
+        return license;
     }
 
     public License createLicense(License license) {
         license.setLicenseId(UUID.randomUUID().toString());
         licenseRepository.save(license);
-        return license.withComment(config.getProperty());
+        return license;
     }
 
     public String deleteLicense(String organizationId, String licenseId) {

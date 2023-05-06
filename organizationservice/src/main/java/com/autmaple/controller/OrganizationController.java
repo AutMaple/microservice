@@ -10,7 +10,6 @@ import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.security.RolesAllowed;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/v1/organization")
@@ -39,11 +37,7 @@ public class OrganizationController {
     @GetMapping("/{organizationId}")
     @RolesAllowed({"ADMIN"})
     public ResponseEntity<Organization> getOrganization(@PathVariable("organizationId") String organizationId, Authentication authentication) {
-        String roles = authentication.getAuthorities()
-                .stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
-        log.error(roles);
+        log.warn(organizationId);
         return ResponseEntity.ok(organizationService.findById(organizationId));
     }
 

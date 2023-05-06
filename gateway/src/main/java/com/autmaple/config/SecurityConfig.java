@@ -1,14 +1,12 @@
 package com.autmaple.config;
 
-import com.autmaple.common.config.KeycloakJwtAuthenticationConverter;
-import org.springframework.cloud.gateway.route.RouteLocator;
-import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
+import org.springframework.security.oauth2.jwt.NimbusReactiveJwtDecoder;
 import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
-import reactor.core.publisher.Mono;
 
 @Configuration
 public class SecurityConfig {
@@ -19,20 +17,17 @@ public class SecurityConfig {
                 .anyExchange().authenticated()
                 .and()
                 .oauth2ResourceServer()
-                .jwt()
-                .jwtAuthenticationConverter(jwt -> Mono.fromSupplier(() -> new KeycloakJwtAuthenticationConverter().convert(jwt)));
+                .jwt();
         return httpSecurity.build();
     }
 
     @Bean
-    RouteLocator routeLocator(RouteLocatorBuilder builder) {
-        // todo need to modify
-        return null;
-    }
-
-    @Bean
     ReactiveJwtDecoder reactiveJwtDecoder() {
-        // todo add a ReactiveJwtDecoder
-        return null;
+        // 默认提供的 SupplierReactiveJwtDecoder 不支持 ES256 加密算法
+        // 而 Keycloak 提供的 jwt 使用的是 ES256 加密算法进行加密
+        // 因此需要为 Keycloak 配置一个 ReactiveJwtDecoder.
+        return NimbusReactiveJwtDecoder.withJwkSetUri("http://localhost:10000/realms/ostock/protocol/openid-connect/certs")
+                .jwsAlgorithm(SignatureAlgorithm.ES256)
+                .build();
     }
 }

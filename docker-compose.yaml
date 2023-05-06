@@ -24,3 +24,41 @@ services:
     container_name: kafka
     ports:
       - "9092:9092"
+  kibana:
+    image: bitnami/kibana:7.17.9
+    container_name: kibana
+    ports:
+      - "5601:5601"
+    environment:
+      - KIBANA_ELiSTICSEARCH_URL=elasticsearch
+    volumes:
+      - "${PWD}/data:/bitnami/kibana"
+  elasticsearch:
+    image: bitnami/elasticsearch:7.17.10
+    container_name: elasticsearch
+    volumes:
+      - "${PWD}/data:/bitnami/elasticsearch/data"
+      #      - "${PWD}/conf/elasticsearch.yaml:/opt/bitnami/elasticsearch/config/elasticsearch.yml"
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      ELASTICSEARCH_HEAP_SIZE: 1024m
+  logstash:
+    image: bitnami/logstash:7.17.10
+    container_name: logstash
+    ports:
+      - "5000:8080"
+    volumes:
+      - "${PWD}/data:/bitnami"
+      - "${PWD}/conf:/bitnami/logstash/pipeline"
+    environment:
+      LOGSTASH_PIPELINE_CONF_FILENAME: logstash.conf
+  zipkin:
+    image: openzipkin/zipkin:2.24
+    container_name: zipkin
+    ports:
+      - "9411:9411"
+    environment:
+      - "STORAGE_TYPE=elasticsearch"
+      - "ES_HOSTS=elasticsearch:9200"
